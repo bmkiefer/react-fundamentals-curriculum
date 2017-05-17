@@ -1,18 +1,19 @@
 var React = require('react');
-var ReactRouter = require('react-router-dom');
-var Router = ReactRouter.BrowserRouter;
-var Route = ReactRouter.Route;
-var Switch = ReactRouter.Switch;
-var Header = require('./Header');
-var Home = require('./Home');
-var Forecast = require('./Forecast');
+// var ReactRouter = require('react-router-dom');
+// var Router = ReactRouter.BrowserRouter;
+// var Route = ReactRouter.Route;
+// var Switch = ReactRouter.Switch;
+// var Nav = require('./Nav');
+// var Home = require('./Home');
+// var Forecast = require('./Forecast');
 
 class App extends React.Component {
   render() {
     return (
-      <Router>
+      <p>what up</p>
+      /*<Router>
         <div className='container'>
-          <Header />
+          <Nav />
 
           <Switch>
             <Route exact path='/' component={Home} />
@@ -22,7 +23,7 @@ class App extends React.Component {
             }} />
           </Switch>
         </div>
-      </Router>
+      </Router>*/
     )
   }
 }
