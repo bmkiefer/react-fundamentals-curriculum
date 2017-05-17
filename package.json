@@ -9,6 +9,12 @@
     "firebase-init": "firebase login && firebase init",
     "deploy": "npm run build && firebase deploy"
   },
+  "babel": {
+    "presets": [
+      "env",
+      "react"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bmkiefer/react-fundamentals-curriculum.git"

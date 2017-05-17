@@ -1,5 +1,7 @@
 var axios = require('axios');
 
+var weather_api_key = "7acdca91bfe1d15c0d8873a041a894ac";
+
 var id = "YOUR_CLIENT_ID";
 var sec = "YOUR_SECRET_ID";
 var params = "?client_id=" + id + "&client_secret=" + sec;
