@@ -1,7 +1,13 @@
-{/*<div class="navbar">
-  <h1>Clever Title</h1>
-  <div class="zipcode-container" style="flex-direction: row;">
-    <input type="text" class="form-control" placeholder="St. George, Utah" value="">
-    <button type="button" class="btn btn-success" style="margin: 10px;">Get Weather</button>
+var React = require('react');
+var CityInput = require('./CityInput');
+
+function Nav () {
+  return (
+    <div className="navbar">
+      <h1>Clever Title</h1>
+      <CityInput flexDirection='row'/>
     </div>
-</div>*/}
+  )
+}
+
+module.exports = Nav;
