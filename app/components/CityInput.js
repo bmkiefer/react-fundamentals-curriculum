@@ -5,42 +5,48 @@ class CityInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      error: null,
-      loading: true,
-      flexDirection: props.flexDirection
+      flexDirection: props.flexDirection,
+      onSubmitCity: props.onSubmitCity,
+      city: '',
     }
+
+    this.handleSubmitCity = this.handleSubmitCity.bind(this);
+    this.handleUpdateCity = this.handleUpdateCity.bind(this);
   }
-  componentDidMount() {
-    // var players = queryString.parse(this.props.location.search);
+  handleSubmitCity () {
+    this.props.onSubmitCity(this.state.city)
 
-    // api.battle([
-    //   players.playerOneName,
-    //   players.playerTwoName
-    // ]).then(function (players) {
-    //   if (players === null) {
-    //     return this.setState(function () {
-    //       return {
-    //         error: 'Looks like there was an error. Check that both users exist on Github.',
-    //         loading: false,
-    //       }
-    //     });
-    //   }
-
-    //   this.setState(function () {
-    //     return {
-    //       error: null,
-    //       winner: players[0],
-    //       loser: players[1],
-    //       loading: false,
-    //     }
-    //   });
-    // }.bind(this));
+    this.setState(function () {
+      return {
+        city: ''
+      }
+    })
+  }
+  handleUpdateCity (e) {
+    var city = e.target.value;
+    this.setState(function () {
+      return {
+        city: city
+      }
+    });
   }
   render() {
     return (
       <div className="zipcode-container" style={{ flexDirection : this.state.flexDirection }}>
-        <input type="text" className="form-control" placeholder="St. George, Utah" value=""></input>
-        <button type="button" className="btn btn-success" style={{ margin: '10px'}}>Get Weather</button>
+        <input 
+          type="text" 
+          className="form-control" 
+          onChange={this.handleUpdateCity} 
+          placeholder="St. George, Utah" 
+          value={this.state.city}>
+        </input>
+        <button 
+          type="button" 
+          className="btn btn-success" 
+          style={{ margin: '10px'}}
+          onClick={this.handleSubmitCity}>
+          Get Weather
+        </button>
       </div>
     )
   }
@@ -48,10 +54,11 @@ class CityInput extends React.Component {
 
 CityInput.propTypes = {
   flexDirection: PropTypes.string.isRequired,
+  onSubmitCity: PropTypes.func.isRequired,
 }
 
 CityInput.defaultProps = {
-  flexDirection: 'row'
+  flexDirection: 'row' 
 };
 
 module.exports = CityInput;

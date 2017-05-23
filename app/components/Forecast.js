@@ -1,63 +1,99 @@
 var React = require('react');
-var PropTypes = require('prop-types');
+var Loading = require('./Loading');
+var DayItem = require('./DayItem');
 var queryString = require('query-string');
 var api = require('../utils/api');
+var helpers = require('../utils/helpers');
 
 class Forecast extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       error: null,
-      loading: true
+      loading: true,
+      forecast: [],
+      city: ''
     }
+
+    this.makeRequest = this.makeRequest.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
   componentDidMount() {
-    // var players = queryString.parse(this.props.location.search);
+    this.city = queryString.parse(this.props.location.search).city;
+    this.makeRequest(this.city);
+  }
+  componentWillReceiveProps(nextProps) {
+    this.city = queryString.parse(nextProps.location.search).city;
+    this.makeRequest(this.city);
+  }
+  makeRequest(city) {
+    this.setState(function () {
+      return {
+        loading: true
+      }
+    })
 
-    // api.battle([
-    //   players.playerOneName,
-    //   players.playerTwoName
-    // ]).then(function (players) {
-    //   if (players === null) {
-    //     return this.setState(function () {
-    //       return {
-    //         error: 'Looks like there was an error. Check that both users exist on Github.',
-    //         loading: false,
-    //       }
-    //     });
-    //   }
+    api.getForecast(city)
+      .then(function (res) {
+        this.setState(function () {
+          return {
+            loading: false,
+            forecastData: res,
+          }
+        })
+      }.bind(this))
+  }
+  makeRequest(city) {
+    api.getForecast(city).then(function (forecast) {
+      if (forecast === null) {
+        return this.setState(function () {
+          return {
+            error: 'Looks like there was an error. Check that the city exists.',
+            loading: false,
+          }
+        });
+      }
 
-    //   this.setState(function () {
-    //     return {
-    //       error: null,
-    //       winner: players[0],
-    //       loser: players[1],
-    //       loading: false,
-    //     }
-    //   });
-    // }.bind(this));
+      this.setState(function () {
+        return {
+          error: null,
+          forecast: forecast,
+          loading: false,
+          city: city
+        }
+      });
+    }.bind(this));
+  }
+  handleClick(forecastDay) {
+    forecastDay.city = this.city;
+    this.props.history.push({
+      pathname: '/details/' + this.city,
+      state: forecastDay,
+    })
   }
   render() {
     var error = this.state.error;
     var loading = this.state.loading;
-
-    if (loading === true) {
-      return <Loading />
-    }
+    var forecast = this.state.forecast;
 
     if (error) {
       return (
         <div>
           <p>{error}</p>
-          <Link to='/battle'>Reset</Link>
+          <p>Search Again</p>
         </div>
       )
     }
-
     return (
-      <div className='row'>
-        yooooo my forecast
-      </div>
+      this.state.loading === true ? <Loading />
+      : <div>
+          <h1 className='forecast-header'>{this.city}</h1>
+          <div className='forecast-container'>
+            {this.state.forecast.map(function (listItem) {
+              return <DayItem key={listItem.dt} onClick={this.handleClick.bind(this, listItem)} day={listItem} />
+            }, this)}
+          </div>
+        </div>
     )
   }
 }

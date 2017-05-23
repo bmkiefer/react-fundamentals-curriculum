@@ -1,68 +1,50 @@
 var axios = require('axios');
 
-var weather_api_key = "7acdca91bfe1d15c0d8873a041a894ac";
+var _baseURL = 'http://api.openweathermap.org/data/2.5/';
+var _APIKEY = '7acdca91bfe1d15c0d8873a041a894ac';
 
-var id = "YOUR_CLIENT_ID";
-var sec = "YOUR_SECRET_ID";
-var params = "?client_id=" + id + "&client_secret=" + sec;
 
-function getProfile (username) {
-  return axios.get('https://api.github.com/users/' + username + params)
-    .then(function (user) {
-      return user.data;
-    });
+function prepRouteParams (queryStringData) {
+  return Object.keys(queryStringData)
+    .map(function (key) {
+      return key + '=' + encodeURIComponent(queryStringData[key]);
+    }).join('&')
 }
 
-function getRepos (username) {
-  return axios.get('https://api.github.com/users/' + username + '/repos' + params + '&per_page=100');
+function prepUrl (type, queryStringData) {
+  return _baseURL + type + '?' + prepRouteParams(queryStringData);
 }
 
-function getStarCount (repos) {
-  return repos.data.reduce(function (count, repo) {
-    return count + repo.stargazers_count
-  }, 0);
+function getQueryStringData (city) {
+  return {
+    q: city + ',us',
+    type: 'accurate',
+    APPID: _APIKEY,
+    cnt: 5
+  }
 }
 
-function calculateScore (profile, repos) {
-  var followers = profile.followers;
-  var totalStars = getStarCount(repos);
+function getCurrentWeather (city) {
+  var queryStringData = getQueryStringData(city);
+  var url = prepUrl('weather', queryStringData)
 
-  return (followers * 3) + totalStars;
+  return axios.get(url)
+    .then(function (currentWeatherData) {
+      return currentWeatherData.data
+    })
 }
 
-function handleError (error) {
-  console.warn(error);
-  return null;
-}
+function getForecast (city) {
+  var queryStringData = getQueryStringData(city);
+  var url = prepUrl('forecast', queryStringData)
 
-function getUserData (player) {
-  return axios.all([
-    getProfile(player),
-    getRepos(player)
-  ]).then(function (data) {
-    var profile = data[0];
-    var repos = data[1];
-
-    return {
-      profile: profile,
-      score: calculateScore(profile, repos)
-    }
-  });
-}
-
-function sortPlayers (players) {
-  return players.sort(function (a,b) {
-    return b.score - a.score;
-  });
+  return axios.get(url)
+    .then(function (forecastData) {
+      return forecastData.data.list
+    })
 }
 
 module.exports = {
-  fetchForecast: function (language) {
-    var encodedURI = window.encodeURI('https://api.github.com/search/repositories?q=stars:>1+language:'+ language + '&sort=stars&order=desc&type=Repositories');
-
-    return axios.get(encodedURI)
-      .then(function (response) {
-        return response.data.items;
-      });
-  }
-};
+  getCurrentWeather: getCurrentWeather,
+  getForecast: getForecast
+}
