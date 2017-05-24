@@ -11,10 +11,9 @@ class Details extends React.Component {
         <DayItem day={props} />
         <div className='description-container'>
           <p>{props.city}</p>
-          <p>{props.weather[0].description}</p>
-          <p>min temp: {convertTemp(props.main.temp_min)} degrees</p>
-          <p>max temp: {convertTemp(props.main.temp_max)} degrees</p>
-          <p>humidity: {props.main.humidity}</p>
+          <p>{props.text}</p>
+          <p>min temp: {props.low} degrees</p>
+          <p>max temp: {props.high} degrees</p>
         </div>
       </div>
     )

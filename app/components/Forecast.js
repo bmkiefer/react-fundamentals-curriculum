@@ -2,7 +2,7 @@ var React = require('react');
 var Loading = require('./Loading');
 var DayItem = require('./DayItem');
 var queryString = require('query-string');
-var api = require('../utils/api');
+var api = require('../utils/yahooApi');
 var helpers = require('../utils/helpers');
 
 class Forecast extends React.Component {
@@ -90,7 +90,7 @@ class Forecast extends React.Component {
           <h1 className='forecast-header'>{this.city}</h1>
           <div className='forecast-container'>
             {this.state.forecast.map(function (listItem) {
-              return <DayItem key={listItem.dt} onClick={this.handleClick.bind(this, listItem)} day={listItem} />
+              return <DayItem key={listItem.date} onClick={this.handleClick.bind(this, listItem)} day={listItem} />
             }, this)}
           </div>
         </div>
